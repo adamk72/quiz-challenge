@@ -10,6 +10,7 @@ var finalScoreContainer = document.getElementById("final-score-container")
 var beforeStartContainer = document.getElementById("before-start")
 var answerResultElement = document.getElementById("answer-result")
 var gameInterval
+var initialsForm = document.getElementById("initials-form");
 
 // there's a question, an array of choices, and an answer that we'll store globally to check against (there are better ways to do this).
 var quizItems = [
@@ -27,10 +28,10 @@ function initializeGameState() {
     finalScoreContainer.style.setProperty("display", "none")
     currentQuestionIndex = 0
     currentAnswer = ""
-
 }
 function startGame() {
     initializeGameState()
+    initialsForm.addEventListener("submit", handleSubmit)
     beforeStartContainer.style.setProperty("display", "none")
     renderQuestions(currentQuestionIndex)
     gameInterval = setInterval(() => {
@@ -39,6 +40,25 @@ function startGame() {
             renderFinalAnswer();
         }
     }, 1000);
+}
+
+
+function handleSubmit(event) {
+    // so that we can do some work on the form.
+    event.preventDefault();
+
+    let initials = document.getElementById("initials").value
+
+    let playerScores = JSON.parse(localStorage.getItem("playerScores"))
+    if (!playerScores) playerScores = []
+    
+    // push modifies the array in place
+    playerScores.push({ initials, score: timeLeft })
+    localStorage.setItem("playerScores", JSON.stringify(playerScores))
+
+    // clear out the form.
+    initialsForm.reset()
+    window.location.href = "highscore.html";
 }
 function renderFinalAnswer(params) {
     clearInterval(gameInterval);
