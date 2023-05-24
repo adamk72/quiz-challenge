@@ -5,6 +5,7 @@ var questionsContainer = document.getElementById("questions-container")
 var currentQuestionIndex = 0
 var currentAnswer = ""
 var answerResultElement = document.getElementById("answer-result")
+var gameInterval
 
 // there's a question, an array of choices, and an answer that we'll store globally to check against (there are better ways to do this).
 var quizItems = [
@@ -18,13 +19,21 @@ function startGame() {
     // get the number of quizItems in total
     const totalNumOfQuizItems = quizItems.length
     renderQuestions(currentQuestionIndex)
-    var gameInterval = setInterval(() => {
+    gameInterval = setInterval(() => {
         timerSpan.textContent = timeLeft--;
         if (!timeLeft) {
             clearInterval(gameInterval);
-            window.location.href = "highscore.html";
+            renderFinalAnswer();
+            // window.location.href = "highscore.html";
         }
     }, 1000);
+}
+function renderFinalAnswer(params) {
+    finalScoreContainer = document.getElementById("final-score-container")
+    questionsContainer.style.setProperty("display", "none")
+    finalScoreContainer.style.setProperty("display", "inline-block")
+    finalScore = document.getElementById("final-score")
+    finalScore.innerHTML = timeLeft;
 }
 function checkAnswer(event) {
     answerResultElement.innerHTML = "Wrong!"
@@ -38,9 +47,9 @@ function checkAnswer(event) {
         currentQuestionIndex++
         renderQuestions(currentQuestionIndex)
     } else {
-        questionsContainer.style.setProperty("display", "none") 
+        clearInterval(gameInterval);
+        renderFinalAnswer();
     }
-    console.log(currentQuestionIndex, quizItems.length)
 }
 function renderQuestions(questionIndex) {
     const numOfChoices = quizItems[questionIndex].choices.length
