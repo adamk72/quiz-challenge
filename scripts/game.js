@@ -34,8 +34,9 @@ function startGame() {
     initialsForm.addEventListener("submit", handleSubmit)
     beforeStartContainer.style.setProperty("display", "none")
     renderQuestions(currentQuestionIndex)
+    timerSpan.textContent = timeLeft;
     gameInterval = setInterval(() => {
-        timerSpan.textContent = timeLeft--;
+        timerSpan.textContent = --timeLeft;
         if (!timeLeft) {
             renderFinalAnswer();
         }
