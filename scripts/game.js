@@ -1,9 +1,13 @@
 var startButton = document.getElementById("start-button");
 var timerSpan = document.getElementById("time-left");
-var timeLeft = 75
-var questionsContainer = document.getElementById("questions-container")
+var startingTime = 75
+var timeLeft = startingTime
+var wrongAnswerPenalty = 10
 var currentQuestionIndex = 0
 var currentAnswer = ""
+var questionsContainer = document.getElementById("questions-container")
+var finalScoreContainer = document.getElementById("final-score-container")
+var beforeStartContainer = document.getElementById("before-start")
 var answerResultElement = document.getElementById("answer-result")
 var gameInterval
 
@@ -15,30 +19,40 @@ var quizItems = [
 // get the question buttons so you can replace them with the question text
 var quizChoiceButtons = document.querySelectorAll(".choice")
 
+function initializeGameState() {
+    clearInterval(gameInterval);
+    timeLeft = startingTime;
+    beforeStartContainer.style.setProperty("display", "block")
+    questionsContainer.style.setProperty("display", "none")
+    finalScoreContainer.style.setProperty("display", "none")
+    currentQuestionIndex = 0
+    currentAnswer = ""
+
+}
 function startGame() {
-    // get the number of quizItems in total
-    const totalNumOfQuizItems = quizItems.length
+    initializeGameState()
+    beforeStartContainer.style.setProperty("display", "none")
     renderQuestions(currentQuestionIndex)
     gameInterval = setInterval(() => {
         timerSpan.textContent = timeLeft--;
         if (!timeLeft) {
-            clearInterval(gameInterval);
             renderFinalAnswer();
-            // window.location.href = "highscore.html";
         }
     }, 1000);
 }
 function renderFinalAnswer(params) {
-    finalScoreContainer = document.getElementById("final-score-container")
+    clearInterval(gameInterval);
+
     questionsContainer.style.setProperty("display", "none")
     finalScoreContainer.style.setProperty("display", "inline-block")
     finalScore = document.getElementById("final-score")
     finalScore.innerHTML = timeLeft;
 }
 function checkAnswer(event) {
-    answerResultElement.innerHTML = "Wrong!"
-    if (event.target.innerHTML === currentAnswer) {
-        answerResultElement.innerHTML = "Correct!"
+    answerResultElement.innerHTML = "Correct!"
+    if (event.target.innerHTML != currentAnswer) {
+        timeLeft -= wrongAnswerPenalty
+        answerResultElement.innerHTML = "Wrong!"
     }
     answerResultElement.style.setProperty("display", "inline")
 
@@ -47,7 +61,6 @@ function checkAnswer(event) {
         currentQuestionIndex++
         renderQuestions(currentQuestionIndex)
     } else {
-        clearInterval(gameInterval);
         renderFinalAnswer();
     }
 }
