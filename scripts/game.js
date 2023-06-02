@@ -8,6 +8,7 @@ var currentAnswer = ""
 var questionsContainer = document.getElementById("questions-container")
 var finalScoreContainer = document.getElementById("final-score-container")
 var beforeStartContainer = document.getElementById("before-start")
+var questionElement = document.getElementById("question")
 var answerResultElement = document.getElementById("answer-result")
 var gameInterval
 var initialsForm = document.getElementById("initials-form");
@@ -52,7 +53,7 @@ function handleSubmit(event) {
 
     let playerScores = JSON.parse(localStorage.getItem("playerScores"))
     if (!playerScores) playerScores = []
-    
+
     // push modifies the array in place
     playerScores.push({ initials, score: timeLeft })
     localStorage.setItem("playerScores", JSON.stringify(playerScores))
@@ -87,6 +88,7 @@ function checkAnswer(event) {
 }
 function renderQuestions(questionIndex) {
     const numOfChoices = quizItems[questionIndex].choices.length
+    questionElement.innerHTML = quizItems[questionIndex].question
     for (let index = 0; index < numOfChoices; index++) {
         quizChoiceButtons[index].innerHTML = quizItems[questionIndex].choices[index]
         quizChoiceButtons[index].addEventListener("click", checkAnswer)
